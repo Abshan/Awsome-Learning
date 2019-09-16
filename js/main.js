@@ -11,6 +11,7 @@ let ended = false;
 let q_array = [];
 let queStarted = false;
 let skip = false;
+let swipe = false;
 let backChck = false;
 let startquestionChk = false;
 
@@ -65,9 +66,9 @@ function setup() {
 
 
             //Swipe gesture detection
-            if ((~~poses[0].pose.rightWrist.y > 100) && (~~poses[0].pose.rightWrist.y < 420)) {
+            if ((~~poses[0].pose.rightWrist.y > 100) && (~~poses[0].pose.rightWrist.y < 400)) {
                 if (boolIn == false && begin === 0) {
-                    begin = ~~poses[0].pose.rightWrist.x + 120;
+                    begin = ~~poses[0].pose.rightWrist.x + 80;
                     boolIn = true;
                 }
                 inTime = true;
@@ -78,19 +79,25 @@ function setup() {
                         end = ~~poses[0].pose.rightWrist.x;
                         boolIn = true;
 
-                        if (end > begin && ended == false) {
+                        if (end > begin && ended == false && swipe == false) {
                             if ($('input[value=True]:checked').length > 0 || $('input[value=False]:checked').length > 0) {
                                 $('.next').click();
+                                swipe = true;
+                                swipeWait();
                             }
                             if (started == false && ended == false) {
                                 $('#next').click();
                                 started = true;
+                                swipe = true;
+                                swipeWait();
                             }
                         }
 
                         // Swipe back gesture
-                        if (end < begin - 220 && ended == false && backChck == false) {
+                        if (end < begin - 220 && ended == false && backChck == false && swipe == false) {
                             $('.back').click();
+                            swipe = true;
+                            swipeWait();
                         }
                     }
                 }
@@ -130,6 +137,12 @@ function loading() {
     }, 5000);
 }
 
+function swipeWait() {
+    setTimeout(function () {
+        swipe = false;
+    }, 500);
+}
+
 function draw() {
     image(video, 0, 0, width, height);
 }
@@ -148,7 +161,7 @@ $(document).ready(function () {
         button = $('#next'), //start quiz button
         bacq = $('.back'),  //back button
         nexq = $('.next');//next question button
-        returnq = $('.replay'); // play again button
+    returnq = $('.replay'); // play again button
 
 
     //Function that creates radio button
