@@ -1,0 +1,225 @@
+<!DOCTYPE HTML>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js"></script>
+    <title>Awsome Learning</title>
+</head>
+
+<body id="bodyevt" style="overflow: hidden;">
+
+    <header>
+        <h1><a href="#" class="header-button" style="text-decoration: none; border-style: solid; border-width: 4px; padding: 6px;">Awesome Learning</a></h1>
+        <div>
+            <ul>
+                <li><a class="logedIn" id="view-account" style="display: none">Account</a></li>
+                <li><a class="logedOut" id="login-key" style="display: none">Login</a></li>
+                <li><a class="logedIn" style="display: none" id="logout-key">Logout</a></li>
+                <li><a class="admin" id="create-key" style="display: none">Create Question</a></li>
+            </ul>
+        </div>
+        <div class="curtein"></div>
+    </header>
+
+    <!--Login & Signup-->
+
+    <div id="mask"></div> <!-- The transperent background overlay -->
+
+    <div class="model">
+        <!-- The popup -->
+        <div class="constraint">
+
+            <div id="modal-account" style="display: none; border-style: solid; border-color: black; border-radius: 6px">
+                <h4 style="font-size: larger">Account Details</h4>
+                <div class="account-details" style="margin-bottom: 20px; color: mediumblue"></div>
+            </div>
+
+            <div id="add-questions" style="display: none; border-style: solid; border-color: black; border-radius: 6px">
+                <h4 style="font-size: 24px; margin-bottom: 10px">Create Questions</h4>
+                <form class="question-adder" action="" style="margin-top: -30px;">
+                    <select class="drplist2" name="q-grade" id="q-grade">
+                        <option value="grade1">Select grade...</option>
+                        <option value="grade1">Grade One</option>
+                        <option value="grade2">Grade Two</option>
+                        <option value="grade3">Grade Three</option>
+                        <option value="grade4">Grade Four</option>
+                        <option value="grade5">Grade Five</option>
+                    </select>
+                    <select class="drplist2" name="q-subject" id="q-subject">
+                        <option value="grade1">Select subject...</option>
+                        <option value="sub1">Subject 1</option>
+                        <option value="sub2">Subject 2</option>
+                        <option value="sub3">Subject 3</option>
+                        <option value="sub4">Subject 4</option>
+                        <option value="sub5">Subject 5</option>
+                    </select>
+                    <textarea rows="2" cols="50" id="question-text" style="resize: none"
+                        placeholder="Enter the question here..." required></textarea>
+                    <label for="answer" style="margin-top: 10px; margin-left: -150px">Answer:</label>
+                    <select class="drplist2" name="answer-choice" id="answer">
+                        <option value="True">True</option>
+                        <option value="False">False</option>
+                    </select>
+                    <button id="create-question-button"
+                        style="width: 300px; margin-top: 10px; margin-left: 250px; font-size: larger;">Add
+                        Question</button>
+                </form>
+            </div>
+
+            <div id="modal-signup" style="display: none" class="container">
+                <div class="login-toggle">
+                    <section class="toggle">
+                        <h3>Don't Have an Account?</h3>
+                        <p>Sign up now and get access to fun new features</p>
+                        <button class="btn-toggle" type="button">Sign Up</button>
+                    </section>
+                    <section class="toggle">
+                        <h3>Have an Account?</h3>
+                        <p>Login and get back into the fun</p>
+                        <button class="btn-toggle" type="button">Login</button>
+                    </section>
+                </div>
+                <div id="slider">
+                    <div class="login-signup">
+                        <form id="signup-form">
+                            <h2>Sign Up</h2>
+                            <!--<input type="text" placeholder="Full Name">-->
+                            <input type="email" id="signup-email" placeholder="Email" required>
+                            <input type="password" id="signup-password" placeholder="Password">
+                            <button id="signup-button">Sign Up</button>
+                        </form>
+                        <form id="login-form">
+                            <h2>Login</h2>
+                            <input type="email" id="login-email" placeholder="Email" required>
+                            <input type="password" id="login-password" placeholder="Password">
+                            <button id="login-button">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- /Popup content -->
+    </div> <!-- /The popup -->
+
+    <!--Login & Signup END-->
+    <div class="wrapper">
+        <!--<iframe src="question.html" frameborder="0" width="100%" height="100%" style="display: none"></iframe>-->
+        <div id="question-panel" style="display: none; overflow: auto;">
+
+            <div id="camera">
+                <ul style="margin-top: 130px; list-style-type: square; text-align: left; font-size: 21px; font-weight: bold;">
+                    <li>Swipe left using Right Hand to start the questionair.</li>
+                    <li style="margin-top: 5px;">Raise your right hand to answer True.</li>
+                    <li style="margin-top: 5px;">Raise your left hand to answer False.</li>
+                    <li style="margin-top: 5px;">Raise both hands up to the shoulders to skip the question.</li>
+                    <li style="margin-top: 5px;">Swipe right using right hand to go to the previous question.</li>
+                </ul>
+                <div id="videoContainer"></div>
+                <p id="status" style="font-size: 12px; color:black; margin-top: 2px; margin-left: 5px;">Camera Feed Not
+                    Active!</p>
+            </div>
+
+            <div id="question" style="clear:both;">
+                <div class="mcq">
+                    <div class="quiz"></div>
+                    <div id="next" class="button">Take the test</div>
+                    <div class="back button">Previous Question</div>
+                    <div class="next button">Next Question</div>
+                    <div class="replay button">Play Again</div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="welcome-screen">
+
+            <div class="logedOut" style="display: none">
+                <div class="border-line" style="margin-top: 80px;"></div>
+                <h5 style="margin-top: 0; font-size: 40px;">Login to start answering questions.</h5>
+                <div class="image-screen"></div>
+                <div class="border-line"></div>
+            </div>
+
+            <div class="admin admin-form" style="display: none;">
+                <form class="admin-actions">
+                    <input type="email" placeholder=" User email" id="admin-email"
+                        style="width: 400px; margin-left: 25px;" required />
+                    <button class="make-admin" style="margin-bottom: -30px;">Make Admin</button>
+                </form>
+            </div><br>
+
+            <div class="entry-form" style="display: none;">
+                <form action="">
+                    <select class="drplist" name="grade" id="grade">
+                        <option value="">Select a grade...</option>
+                        <option value="grade1">Grade One</option>
+                        <option value="grade2">Grade Two</option>
+                        <option value="grade3">Grade Three</option>
+                        <option value="grade4">Grade Four</option>
+                        <option value="grade5">Grade Five</option>
+                    </select>
+                    <select class="drplist" name="subject" id="subject">
+                        <option value="">Select a subject...</option>
+                        <option value="sub1">Subject 1</option>
+                        <option value="sub2">Subject 2</option>
+                        <option value="sub3">Subject 3</option>
+                        <option value="sub4">Subject 4</option>
+                        <option value="sub5">Subject 5</option>
+                    </select>
+                    <select class="drplist" name="questionNo" id="no_questions">
+                        <option value="">Select the number of questions...</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                    </select>
+                    <button id="start-question" style="margin-left: 300px; font-size: 18px; width: 170px;">Start
+                        Question</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+
+    </footer>
+    <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-firestore.js"></script>
+    <script>
+        // Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCbcTntnHB0cdka6RxHyd5C7WlYHeg8knM",
+            authDomain: "research-project-65773.firebaseapp.com",
+            databaseURL: "https://research-project-65773.firebaseio.com",
+            projectId: "research-project-65773",
+            storageBucket: "research-project-65773.appspot.com",
+            messagingSenderId: "612726604774",
+            appId: "1:612726604774:web:4a030c46e4120873"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const functions = firebase.functions();
+    </script>
+
+    <script src="js/auth.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
