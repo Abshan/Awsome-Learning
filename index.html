@@ -15,7 +15,10 @@
 <body id="bodyevt" style="overflow: hidden;">
 
     <header>
-        <h1><a href="#" class="header-button" style="text-decoration: none; border-style: solid; border-width: 4px; padding: 6px;">Awesome Learning</a></h1>
+        <h1><a href="#">
+                <img src="../Awsome-Learning/images/AwsomeLearning-Logo.png" style="width: 380px; height: 50px;">
+            </a>
+        </h1>
         <div>
             <ul>
                 <li><a class="logedIn" id="view-account" style="display: none">Account</a></li>
@@ -115,7 +118,8 @@
         <div id="question-panel" style="display: none; overflow: auto;">
 
             <div id="camera">
-                <ul style="margin-top: 130px; list-style-type: square; text-align: left; font-size: 21px; font-weight: bold;">
+                <ul
+                    style="margin-top: 130px; list-style-type: square; text-align: left; font-size: 21px; font-weight: bold;">
                     <li>Swipe left using Right Hand to start the questionair.</li>
                     <li style="margin-top: 5px;">Raise your right hand to answer True.</li>
                     <li style="margin-top: 5px;">Raise your left hand to answer False.</li>
@@ -182,6 +186,10 @@
                         <option value="30">30</option>
                         <option value="40">40</option>
                         <option value="50">50</option>
+                    </select>
+                    <select class="drplist" name="dominantHand" id="dominant_Hand">
+                        <option value="Right">Right Handed</option>
+                        <option value="Left">Left Handed</option>
                     </select>
                     <button id="start-question" style="margin-left: 300px; font-size: 18px; width: 170px;">Start
                         Question</button>
