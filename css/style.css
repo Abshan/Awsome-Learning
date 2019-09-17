@@ -330,7 +330,7 @@ p{
        background-color: #444;
        color: #fff;
    }
-   .next,.back,.replay{  
+   .next,.back,.replay,.feedback{  
        display: none; 
    } 
 

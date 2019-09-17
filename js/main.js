@@ -32,9 +32,10 @@ startQuestionButton.addEventListener('click', (e) => {
 
 });
 
-
+let canDimensions = document.querySelector('videoContainer');
 
 function setup() {
+
     const canvas = createCanvas(280, 210);
     canvas.parent('videoContainer');
 
@@ -58,10 +59,14 @@ function setup() {
             //True & false gesture detection
             if ((~~poses[0].pose.leftWrist.y < 220) && (~~poses[0].pose.leftWrist.x > 480) && (~~poses[0].pose.leftElbow.y < 360) && (ended == false)) {
                 $('input[value=False]').prop('checked', true);
+                swipe = true;
+                swipeWait();
             }
 
             if ((~~poses[0].pose.rightWrist.y < 220) && (~~poses[0].pose.rightWrist.x < 160) && (~~poses[0].pose.rightElbow.y < 360) && (ended == false)) {
                 $('input[value=True]').prop('checked', true);
+                swipe = true;
+                swipeWait();
             }
 
 
@@ -140,7 +145,7 @@ function loading() {
 function swipeWait() {
     setTimeout(function () {
         swipe = false;
-    }, 500);
+    }, 750);
 }
 
 function draw() {
@@ -160,8 +165,10 @@ $(document).ready(function () {
         outputs = $('.quiz'), // output div
         button = $('#next'), //start quiz button
         bacq = $('.back'),  //back button
-        nexq = $('.next');//next question button
-    returnq = $('.replay'); // play again button
+        nexq = $('.next'), //next question button
+        feedq = $('.feedback'), //Feedback Button
+        returnq = $('.replay'); // play again button
+
 
 
     //Function that creates radio button
@@ -254,6 +261,7 @@ $(document).ready(function () {
             outputs.append(message);
             bacq.css('display', 'none');
             nexq.css('display', 'none');
+            feedq.css('display', 'inline-block');
             returnq.css('display', 'inline-block');
             display.index = 0;
             display.correct = 0;
@@ -307,6 +315,7 @@ $(document).ready(function () {
     returnq.on('click', function () {
         $(this).css('display', 'none');
         outputs.css('display', 'none');
+        feedq.css('display', 'none');
         outputs.empty();
         display.index = 0;
         display.correct = 0;
