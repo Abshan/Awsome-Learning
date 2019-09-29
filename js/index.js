@@ -6,6 +6,7 @@ const adminItems = document.querySelectorAll('.admin');
 
 const setupUI = (user) => {
     if (user) {
+        document.querySelector('.view-feedback').style.display = 'none';
         if(user.admin){
             adminItems.forEach(item => item.style.display = 'block');
             document.querySelector('.view-feedback').style.display = 'block';
@@ -31,13 +32,14 @@ const setupUI = (user) => {
 
         loggedInLinks.forEach(item => item.style.display = 'block');
         loggedOutLinks.forEach(item => item.style.display = 'none');
+        
         document.querySelector('.entry-form').style.display = 'inline-block';
-        document.querySelector('.view-feedback').style.display = 'none';
     } else {
         adminItems.forEach(item => item.style.display = 'none');
         //hide account info
         accountDetails.innerHTML = '';
         document.querySelector('.entry-form').style.display = 'none';
+        document.querySelector('.view-feedback').style.display = 'none';
         document.querySelector('#question-panel').style.display = 'none';
         loggedInLinks.forEach(item => item.style.display = 'none');
         loggedOutLinks.forEach(item => item.style.display = 'block');
