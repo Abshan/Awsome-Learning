@@ -45,10 +45,10 @@ signupButton.addEventListener('click', (e) => {
             signupForm.reset();
             loginform.reset();
         }).catch(error => {
-            if(error.code == 'auth/invalid-email'){
+            if (error.code == 'auth/invalid-email') {
                 alert('*Invalid Email Address');
             }
-            if(error.code == 'auth/weak-password'){
+            if (error.code == 'auth/weak-password') {
                 alert('*Enter a valid password');
             }
         });
@@ -86,13 +86,13 @@ loginButton.addEventListener('click', (e) => {
             loginform.reset();
             signupForm.reset();
         }).catch(error => {
-            if(error.code == 'auth/user-not-found'){
+            if (error.code == 'auth/user-not-found') {
                 alert('*User Not Found');
             }
-            if(error.code == 'auth/invalid-email'){
+            if (error.code == 'auth/invalid-email') {
                 alert('*Invalid Email Address');
             }
-            if(error.code == 'auth/wrong-password'){
+            if (error.code == 'auth/wrong-password') {
                 alert('*Invalid Password');
             }
         })
@@ -118,4 +118,27 @@ createButn.addEventListener('click', (e) => {
     }).catch(err => {
         console.log(err.message);
     })
+})
+
+//add feedback
+const feedform = document.querySelector('.feedadder');
+const feedbtn = document.querySelector('#create-feedback-button');
+feedbtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if (feedform['feed-text'].value == '') {
+        alert('Feedback field is empty')
+    } else {
+        var user = auth.currentUser;
+        db.collection('feedback').add({
+            username: user.email,
+            text: feedform['feed-text'].value
+        }).then(() => {
+            $('.model').animate({ top: -($('.model').outerHeight()) - 50 });
+            $('#mask').fadeOut(200);
+            document.querySelector('.feedadder').reset();
+        }).catch(err => {
+            console.log(err.message)
+        })
+    }
 })

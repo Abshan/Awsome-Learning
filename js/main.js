@@ -1,38 +1,62 @@
 let video;
 let poseNet;
+let hand;
+let grade;
+let subject;
+let no_questions;
 let poses = [];
 let boolIn = false;
-let boolOut = false;
 let begin = 0;
 let end = 0;
 let inTime = false;
 let started = false;
 let ended = false;
-let q_array = [];
+let q_array = []; //question array
+let a_array = []; //answer array
 let queStarted = false;
 let skip = false;
 let swipe = false;
 let backChck = false;
 let startquestionChk = false;
 
+// Start Question Button Event
 const startQuestionButton = document.querySelector('#start-question');
+
 startQuestionButton.addEventListener('click', (e) => {
     e.preventDefault();
 
-    document.querySelector('#welcome-screen').style.display = 'none';
-    document.querySelector('#question-panel').style.display = 'block';
+    hand = document.getElementById('dominant_Hand').value;
+    grade = document.getElementById('grade').value;
+    subject = document.getElementById('subject').value;
+    no_questions = parseInt(document.getElementById('no_questions').value);
 
+    if (hand != "" && grade != "" && subject != "" && no_questions != "") {
+        //Query to get the questions
+        db.collection('questions').where("grade", "==", grade).where("subject", "==", subject).limit(no_questions).get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                q_array.push(doc.data());
+            });
 
-    db.collection('questions').get().then((snapshot) => {
-        snapshot.docs.forEach(doc => {
-            q_array.push(doc.data());
-        });
-    })
-    queStarted = true;
-
+            if (q_array.length == 0) {
+                alert('Currently ther are no questions available in the selected subject');
+            } else {
+                if(hand == 'Left'){
+                    select('#m1').html('Swipe right using your left hand to start the questionnaire.');
+                    select('#m2').html('Swipe left using your left hand to go to the previous question.');
+                }else{
+                    select('#m1').html('Swipe left using your right hand to start the questionnaire.');
+                    select('#m2').html('Swipe right using your right hand to go to the previous question.');
+                }
+                document.querySelector('#welcome-screen').style.display = 'none';
+                document.querySelector('#question-panel').style.display = 'block';
+                queStarted = true;
+            }
+        })
+    } else {
+        alert('Please select all the preferences...');
+    }
 });
 
-let canDimensions = document.querySelector('videoContainer');
 
 function setup() {
 
@@ -54,85 +78,148 @@ function setup() {
     // with an array every time new poses are detected
     poseNet.on('pose', function (results) {
         poses = results;
+
         if (queStarted == true) {
 
             //True & false gesture detection
-            if ((~~poses[0].pose.leftWrist.y < 220) && (~~poses[0].pose.leftWrist.x > 480) && (~~poses[0].pose.leftElbow.y < 360) && (ended == false)) {
-                $('input[value=False]').prop('checked', true);
-                swipe = true;
-                swipeWait();
-            }
-
-            if ((~~poses[0].pose.rightWrist.y < 220) && (~~poses[0].pose.rightWrist.x < 160) && (~~poses[0].pose.rightElbow.y < 360) && (ended == false)) {
-                $('input[value=True]').prop('checked', true);
-                swipe = true;
-                swipeWait();
-            }
-
-
-            //Swipe gesture detection
-            if ((~~poses[0].pose.rightWrist.y > 100) && (~~poses[0].pose.rightWrist.y < 400)) {
-                if (boolIn == false && begin === 0) {
-                    begin = ~~poses[0].pose.rightWrist.x + 80;
-                    boolIn = true;
+            try {
+                if ((~~poses[0].pose.leftWrist.y < 220) && (~~poses[0].pose.leftWrist.x > 480) && (~~poses[0].pose.leftElbow.y < 360) && (ended == false)) {
+                    if ($('input[value=False]:checked').length === 0) {
+                        $('input[value=False]').prop('checked', true);
+                        swipe = true;
+                        document.getElementById('click').play();
+                        swipeWait();
+                    }
                 }
-                inTime = true;
 
-            } else {
-                if (inTime == true) {
-                    if (boolIn == true && begin != 0 && end === 0) {
-                        end = ~~poses[0].pose.rightWrist.x;
-                        boolIn = true;
+                if ((~~poses[0].pose.rightWrist.y < 220) && (~~poses[0].pose.rightWrist.x < 160) && (~~poses[0].pose.rightElbow.y < 360) && (ended == false)) {
+                    if ($('input[value=True]:checked').length === 0) {
+                        $('input[value=True]').prop('checked', true);
+                        swipe = true;
+                        document.getElementById('click').play();
+                        swipeWait();
+                    }
 
-                        if (end > begin && ended == false && swipe == false) {
-                            if ($('input[value=True]:checked').length > 0 || $('input[value=False]:checked').length > 0) {
-                                $('.next').click();
-                                swipe = true;
-                                swipeWait();
-                            }
-                            if (started == false && ended == false) {
-                                $('#next').click();
-                                started = true;
-                                swipe = true;
-                                swipeWait();
+                }
+
+
+
+                //Swipe gesture detection
+                if (hand == 'Right') {
+
+                    if ((~~poses[0].pose.rightWrist.y > 100) && (~~poses[0].pose.rightWrist.y < 400)) {
+                        if (boolIn == false && begin === 0) {
+                            begin = ~~poses[0].pose.rightWrist.x + 80;
+                            boolIn = true;
+                        }
+                        inTime = true;
+
+                    } else {
+                        if (inTime == true) {
+                            if (boolIn == true && begin != 0 && end === 0) {
+                                end = ~~poses[0].pose.rightWrist.x;
+
+                                if (end > begin && ended == false && swipe == false) {
+                                    if ($('input[value=True]:checked').length > 0 || $('input[value=False]:checked').length > 0) {
+                                        $('.next').click();
+                                        document.getElementById('swipe').play();
+                                        swipe = true;
+                                        swipeWait();
+                                    }
+                                    if (started == false && ended == false) {
+                                        $('#next').click();
+                                        started = true;
+                                        swipe = true;
+                                        swipeWait();
+                                    }
+                                }
+
+                                // Swipe back gesture
+                                if (end < begin - 220 && ended == false && backChck == false && swipe == false) {
+                                    $('.back').click();
+                                    document.getElementById('swipe').play();
+                                    swipe = true;
+                                    swipeWait();
+                                }
                             }
                         }
+                        inTime = false;
+                        boolIn = false;
+                        begin = 0;
+                        end = 0;
+                    }
+                }
 
-                        // Swipe back gesture
-                        if (end < begin - 220 && ended == false && backChck == false && swipe == false) {
-                            $('.back').click();
-                            swipe = true;
-                            swipeWait();
+                if (hand == 'Left') {
+
+                    if ((~~poses[0].pose.leftWrist.y > 100) && (~~poses[0].pose.leftWrist.y < 400)) {
+                        if (boolIn == false && begin === 0) {
+                            begin = ~~poses[0].pose.leftWrist.x - 80;
+                            boolIn = true;
+                            console.log('1st step working');
+                        }
+                        inTime = true;
+
+                    } else {
+                        if (inTime == true) {
+                            if (boolIn == true && begin != 0 && end === 0) {
+                                end = ~~poses[0].pose.leftWrist.x;
+
+                                if (end < begin && ended == false && swipe == false) {
+                                    console.log('2nd step working');
+                                    if ($('input[value=True]:checked').length > 0 || $('input[value=False]:checked').length > 0) {
+                                        $('.next').click();
+                                        document.getElementById('swipe').play();
+                                        swipe = true;
+                                        swipeWait();
+                                    }
+                                    if (started == false && ended == false) {
+                                        $('#next').click();
+                                        started = true;
+                                        swipe = true;
+                                        swipeWait();
+                                    }
+                                }
+
+                                // Swipe back gesture
+                                if (end > begin + 220 && ended == false && backChck == false && swipe == false) {
+                                    $('.back').click();
+                                    document.getElementById('swipe').play();
+                                    swipe = true;
+                                    swipeWait();
+                                }
+                            }
+                        }
+                        inTime = false;
+                        boolIn = false;
+                        begin = 0;
+                        end = 0;
+                    }
+                }
+
+
+                //Skip gesture detection
+                if ((~~poses[0].pose.leftWrist.y > 160) && (~~poses[0].pose.leftWrist.y < 400) && (~~poses[0].pose.leftWrist.x > 400)) {
+                    if ((~~poses[0].pose.rightWrist.y > 160) && (~~poses[0].pose.rightWrist.y < 400) && (~~poses[0].pose.rightWrist.x < 220)) {
+                        //alert("Skipped");
+                        if (skip == false && ended == false && startquestionChk == true) {
+                            $('input[value=False]').prop('checked', false);
+                            $('input[value=True]').prop('checked', false);
+                            document.getElementById('skip').play();
+                            $('.next').click();
+                            skip = true;
+                            loading();
                         }
                     }
                 }
-                inTime = false;
-                boolIn = false;
-                begin = 0;
-                boolOut = false;
-                end = 0;
+
+            } catch{
+                console.log('runtime error detected');
             }
-
-
-            //Skip gesture detection
-            if ((~~poses[0].pose.leftWrist.y > 160) && (~~poses[0].pose.leftWrist.y < 400) && (~~poses[0].pose.leftWrist.x > 400)) {
-                if ((~~poses[0].pose.rightWrist.y > 160) && (~~poses[0].pose.rightWrist.y < 400) && (~~poses[0].pose.rightWrist.x < 220)) {
-                    //alert("Skipped");
-                    if (skip == false && ended == false && startquestionChk == true) {
-                        $('input[value=False]').prop('checked', false);
-                        $('input[value=True]').prop('checked', false);
-                        $('.next').click();
-                        skip = true;
-                        loading();
-                    }
-                }
-            }
-
-
         }
     });
 
-    // Hide the video element, and just show the canvas
+    // Hide the video real element, and just show the canvas video
     video.hide();
 }
 
@@ -145,7 +232,7 @@ function loading() {
 function swipeWait() {
     setTimeout(function () {
         swipe = false;
-    }, 750);
+    }, 1000);
 }
 
 function draw() {
@@ -161,8 +248,8 @@ function modelReady() {
 // Question Panel
 $(document).ready(function () {
 
-    var a_array = [],      //user answer array
-        outputs = $('.quiz'), // output div
+
+    var outputs = $('.quiz'), // output div
         button = $('#next'), //start quiz button
         bacq = $('.back'),  //back button
         nexq = $('.next'), //next question button
@@ -253,6 +340,7 @@ $(document).ready(function () {
             outputs.append(div);
 
         } else {
+            document.getElementById('win').play();
             var greet = $('<h3>');
             var message = right(q_array, a_array);
             greet.text('Congratualtions you got ' + display.correct + ' questions right out of ' + q_array.length);
@@ -265,6 +353,7 @@ $(document).ready(function () {
             returnq.css('display', 'inline-block');
             display.index = 0;
             display.correct = 0;
+
         }
     }
 
@@ -283,6 +372,7 @@ $(document).ready(function () {
     button.on('click', function () {
         $(this).css('display', 'none');
         outputs.css('display', 'block');
+        document.getElementById('begin').play();
         nexq.css('display', 'inline-block');
         display.index = 0;
         display.correct = 0;
@@ -321,8 +411,66 @@ $(document).ready(function () {
         display.correct = 0;
         a_array = [];
         button.css('display', 'inline-block');
+        button.css('margin-top', '10px');
         ended = false;
         started = false;
         startquestionChk = false;
     })
+
+    const homePage = document.querySelector('#web-logo');
+
+    homePage.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        var visibility = document.getElementById('question-panel').style.display;
+
+        if (visibility == 'none') {
+
+        } else {
+            outputs.css('display', 'none');
+            feedq.css('display', 'none');
+            returnq.css('display', 'none');
+            nexq.css('display', 'none');
+            bacq.css('display', 'none');
+            outputs.empty();
+            display.index = 0;
+            display.correct = 0;
+            a_array = [];
+            q_array = [];
+            button.css('display', 'inline-block');
+            button.css('margin-top', '10px');
+            ended = false;
+            started = false;
+            queStarted = false;
+            startquestionChk = false;
+            document.querySelector('#welcome-screen').style.display = 'inline-block';
+            document.querySelector('#question-panel').style.display = 'none';
+        }
+    })
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            
+        } else {
+            outputs.css('display', 'none');
+            feedq.css('display', 'none');
+            returnq.css('display', 'none');
+            nexq.css('display', 'none');
+            bacq.css('display', 'none');
+            outputs.empty();
+            display.index = 0;
+            display.correct = 0;
+            a_array = [];
+            q_array = [];
+            button.css('display', 'inline-block');
+            button.css('margin-top', '10px');
+            ended = false;
+            started = false;
+            queStarted = false;
+            startquestionChk = false;
+            document.getElementById('entry-form-id').reset();
+        }
+    });
+
 });
+

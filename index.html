@@ -15,8 +15,8 @@
 <body id="bodyevt" style="overflow: hidden;">
 
     <header>
-        <h1><a href="#">
-                <img src="../Awsome-Learning/images/AwsomeLearning-Logo.png" style="width: 380px; height: 50px;">
+        <h1><a id="web-logo">
+                <img src="images/AwsomeLearning-Logo.png" style="width: 380px; height: 50px;">
             </a>
         </h1>
         <div>
@@ -43,11 +43,21 @@
                 <div class="account-details" style="margin-bottom: 20px; color: mediumblue"></div>
             </div>
 
+            <div id="feed-form" style="display: none; border-style: solid; border-color: black; border-radius: 6px">
+                <h4 style="font-size: 24px; margin-bottom: 10px">Feedback Form</h4>
+                <form class="feedadder" action="" style="margin-top: -30px;">
+                        <textarea rows="4" cols="50" id="feed-text" style="resize: none"
+                        placeholder="Enter your feedback here..." required></textarea>
+                        <button id="create-feedback-button"
+                        style="width: 300px; margin-top: 10px; margin-left: 250px; font-size: larger;">Save</button>
+                </form>
+            </div>
+
             <div id="add-questions" style="display: none; border-style: solid; border-color: black; border-radius: 6px">
                 <h4 style="font-size: 24px; margin-bottom: 10px">Create Questions</h4>
                 <form class="question-adder" action="" style="margin-top: -30px;">
                     <select class="drplist2" name="q-grade" id="q-grade">
-                        <option value="grade1">Select grade...</option>
+                        <option value="">Select grade...</option>
                         <option value="grade1">Grade One</option>
                         <option value="grade2">Grade Two</option>
                         <option value="grade3">Grade Three</option>
@@ -55,7 +65,7 @@
                         <option value="grade5">Grade Five</option>
                     </select>
                     <select class="drplist2" name="q-subject" id="q-subject">
-                        <option value="grade1">Select subject...</option>
+                        <option value="">Select subject...</option>
                         <option value="sub1">General Knowledge</option>
                         <option value="sub2">English</option>
                         <option value="sub3">Maths</option>
@@ -119,12 +129,12 @@
 
             <div id="camera">
                 <ul
-                    style="margin-top: 130px; list-style-type: square; text-align: left; font-size: 21px; font-weight: bold;">
-                    <li>Swipe left using your Right Hand to start the questionair.</li>
+                    style="margin-top: 130px; margin-left: -20px; list-style-type: square; text-align: left; font-size: 21px; font-weight: bold;">
+                    <li id="m1">Swipe left using your Right Hand to start the questionnaire.</li>
                     <li style="margin-top: 5px;">Raise your right hand to answer True.</li>
                     <li style="margin-top: 5px;">Raise your left hand to answer False.</li>
                     <li style="margin-top: 5px;">Raise both of your hands up to the shoulders to skip the question.</li>
-                    <li style="margin-top: 5px;">Swipe right using your right hand to go to the previous question.</li>
+                    <li id="m2" style="margin-top: 5px;">Swipe right using your right hand to go to the previous question.</li>
                 </ul>
                 <div id="videoContainer"></div>
                 <p id="status" style="font-size: 12px; color:black; margin-top: 2px; margin-left: 5px;">Camera Feed Not
@@ -137,11 +147,15 @@
                     <div id="next" class="button">Take the test</div>
                     <div class="back button">Previous Question</div>
                     <div class="next button">Next Question</div>
-                    <div class="feedback button">Give Feedback</div>
+                    <div id="feedbtn" class="feedback button">Give Feedback</div>
                     <div class="replay button">Play Again</div>
                 </div>
             </div>
-
+            <audio id="click" src="./audio/tick.mp3"></audio>
+            <audio id="win" src="./audio/win.mp3"></audio>
+            <audio id="swipe" src="./audio/swipe.mp3"></audio>
+            <audio id="begin" src="./audio/begin.mp3"></audio>
+            <audio id="skip" src="./audio/skip.mp3"></audio>
         </div>
 
 
@@ -162,8 +176,14 @@
                 </form>
             </div><br>
 
+            <div class="view-feedback" style="display: none;">
+                
+            </div>
+
+            
+
             <div class="entry-form" style="display: none;">
-                <form action="">
+                <form id="entry-form-id" action="">
                     <select class="drplist" name="grade" id="grade">
                         <option value="">Select a grade...</option>
                         <option value="grade1">Grade One</option>
@@ -189,6 +209,7 @@
                         <option value="50">50</option>
                     </select>
                     <select class="drplist" name="dominantHand" id="dominant_Hand">
+                        <option value="">Preference for use of hand...</option>
                         <option value="Right">Right Handed</option>
                         <option value="Left">Left Handed</option>
                     </select>

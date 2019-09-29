@@ -59,6 +59,10 @@ h1 {
     float: left;
 }
 
+#web-logo:hover{
+  cursor: pointer;
+}
+
 header ul {
     list-style: none;
     text-align: right;
@@ -93,6 +97,7 @@ header ul li a:hover{
   padding: 0;
   width: 100%;
   height: 100vh;
+  overflow: auto;
 }
 
 #welcome-screen {
@@ -103,7 +108,7 @@ header ul li a:hover{
 #camera {
     float: left;
     height: 100vh;
-    width: 20%;
+    width: 300px;
     overflow: visible(default);
     position: fixed;
     border-right-style: dotted;
@@ -113,10 +118,11 @@ header ul li a:hover{
 }
 
 #question {
-    float: left;
+    overflow: auto;
     height: 100vh;
-    text-align: center;
+    display: inline-block;
     width: 80%;
+    margin-left: 300px; 
 }
 
 #videoContainer {
@@ -171,7 +177,45 @@ header ul li a:hover{
   border-radius: 6px;
   width: 750px;
   margin-top: 100px;
+  margin-bottom: 100px;
   border-width: 2px 4px 4px 2px;
+}
+
+.view-feedback {
+  text-align: left;
+  overflow: auto;
+  border-style: solid;
+  border-color: #852497;
+  border-radius: 6px;
+  width: 820px;
+  height: 400px;
+  margin-top: 50px;
+  border-width: 2px 4px 4px 2px;
+}
+
+.feedbackdiv {
+  display: inline-block;
+  text-align: left;
+  border-style: solid;
+  border-color: #852497;
+  border-radius: 6px;
+  background: whitesmoke;
+  width: 780px;
+  height: 100px;
+  margin-top: 5px;
+  margin-left: 5px;
+  border-width: 2px 4px 4px 2px;
+}
+
+#feedp {
+  font-size: 14px;
+  margin-top: -20px;
+  font-weight: normal;
+}
+
+#feedh {
+  font-size: 14px;
+  margin-top: -3px;
 }
 
 textarea {
@@ -235,10 +279,8 @@ p{
      background-color: #3b88c3;
    }
    .mcq{
-       position: relative;
-       display: block;
+       display: inline-block;
        margin-top: 200px;
-       margin-left: 580px;
        margin-bottom: 200px; 
        width: 600px;
        background-color: silver; 

@@ -1,12 +1,26 @@
 const loggedInLinks = document.querySelectorAll('.logedIn');
 const loggedOutLinks = document.querySelectorAll('.logedOut');
 const accountDetails = document.querySelector('.account-details');
+var outfeed = $('.view-feedback');
 const adminItems = document.querySelectorAll('.admin');
 
 const setupUI = (user) => {
     if (user) {
         if(user.admin){
             adminItems.forEach(item => item.style.display = 'block');
+            document.querySelector('.view-feedback').style.display = 'block';
+            db.collection('feedback').limit(20).get().then((snapshot) => {
+                snapshot.docs.forEach(doc => {
+                
+                var div = $('<div></div>', {class: 'feedbackdiv'});
+                var name = $('<h3 id="feedh"> Email: '+ doc.data().username +'</h3>');
+                div.append(name);
+                var feed = $('<p id="feedp">').append(doc.data().text);
+                div.append(feed);
+                outfeed.append(div); 
+
+                })
+            })
         }
         //acount info
         const html = `
@@ -17,7 +31,8 @@ const setupUI = (user) => {
 
         loggedInLinks.forEach(item => item.style.display = 'block');
         loggedOutLinks.forEach(item => item.style.display = 'none');
-        document.querySelector('.entry-form').style.display = 'block';
+        document.querySelector('.entry-form').style.display = 'inline-block';
+        document.querySelector('.view-feedback').style.display = 'none';
     } else {
         adminItems.forEach(item => item.style.display = 'none');
         //hide account info
@@ -37,6 +52,7 @@ jQuery(document).ready(function ($) {
         $('#mask').fadeIn(300);
         document.querySelector('#add-questions').style.display = 'none';
         document.querySelector('#modal-account').style.display = 'none';
+        document.querySelector('#feed-form').style.display = 'none';
         document.querySelector('#modal-signup').style.display = 'block';
         $('.model').delay(10).animate({
             top: ($(window).height() - $('.model').outerHeight()) / 2
@@ -47,17 +63,30 @@ jQuery(document).ready(function ($) {
         $('#mask').fadeIn(300);
         document.querySelector('#modal-signup').style.display = 'none';
         document.querySelector('#modal-account').style.display = 'none';
+        document.querySelector('#feed-form').style.display = 'none';
         document.querySelector('#add-questions').style.display = 'block';
         $('.model').delay(10).animate({
             top: ($(window).height() - $('.model').outerHeight()) / 2
         }, 400);
     });
 
+    $('#feedbtn').click(function () {
+        $('#mask').fadeIn(300);
+        document.querySelector('#modal-signup').style.display = 'none';
+        document.querySelector('#modal-account').style.display = 'none';
+        document.querySelector('#feed-form').style.display = 'block';
+        document.querySelector('#add-questions').style.display = 'none';
+        $('.model').delay(10).animate({
+            top: ($(window).height() - $('.model').outerHeight()) / 2
+        }, 400);
+    })
+
     $('#view-account').click(function () {
         $('#mask').fadeIn(300);
         document.querySelector('#add-questions').style.display = 'none';
         document.querySelector('#modal-account').style.display = 'block';
         document.querySelector('#modal-signup').style.display = 'none';
+        document.querySelector('#feed-form').style.display = 'none';
         $('.model').delay(10).animate({
             top: ($(window).height() - $('.model').outerHeight()) / 2
         }, 400);
