@@ -31,14 +31,19 @@ const setupUI = (user) => {
         accountDetails.innerHTML = html;
 
         loggedInLinks.forEach(item => item.style.display = 'block');
-        loggedOutLinks.forEach(item => item.style.display = 'none');
-        
+        loggedOutLinks.forEach(item => item.style.display = 'none'); 
         document.querySelector('.entry-form').style.display = 'inline-block';
+        document.querySelector('.image-screen-2').style.display = 'block';
+        document.querySelector('.border-line-2').style.display = 'block';
+        document.querySelector('.border-line-3').style.display = 'block';
     } else {
         adminItems.forEach(item => item.style.display = 'none');
         //hide account info
         accountDetails.innerHTML = '';
         document.querySelector('.entry-form').style.display = 'none';
+        document.querySelector('.image-screen-2').style.display = 'none';
+        document.querySelector('.border-line-2').style.display = 'none';
+        document.querySelector('.border-line-3').style.display = 'none';
         document.querySelector('.view-feedback').style.display = 'none';
         document.querySelector('#question-panel').style.display = 'none';
         loggedInLinks.forEach(item => item.style.display = 'none');
