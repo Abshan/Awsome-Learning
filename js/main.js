@@ -1,5 +1,5 @@
 let video;
-let poseNet;
+let gestures;
 let hand;
 let grade;
 let subject;
@@ -73,10 +73,10 @@ function setup() {
     }
 
     // Create a new poseNet method with a single detection
-    poseNet = ml5.poseNet(video, options, modelReady);
+    gestures = gestureList.gestures(video, options, modelReady);
     // This sets up an event that fills the global variable "poses"
     // with an array every time new poses are detected
-    poseNet.on('pose', function (results) {
+    gestures.on('pose', function (results) {
         poses = results;
 
         if (queStarted == true) {
