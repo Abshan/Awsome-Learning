@@ -72,7 +72,7 @@ function setup() {
         outputStride: 8
     }
 
-    // Create a new poseNet method with a single detection
+    // Create a new gestureList method with a single detection
     gestures = gestureList.gestures(video, options, modelReady);
     // This sets up an event that fills the global variable "poses"
     // with an array every time new poses are detected
